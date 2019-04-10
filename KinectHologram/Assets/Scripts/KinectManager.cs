@@ -6,26 +6,11 @@ using System.Linq;
 
 public class KinectManager : MonoBehaviour
 {
-    public GameObject ErrorMessage;
-
     private KinectSensor sensor;
     private BodyFrameReader bodyReader;
     private FaceFrameReader faceReader;
     private FaceFrameSource faceSource;
-
-    public Windows.Kinect.Vector4 HeadRotation
-    {
-        get;
-        private set;
-    }
-
-    public CameraSpacePoint HeadPosition
-    {
-        get;
-        private set;
-    }
-
-    public 
+    private NetworkManager networkManager;
 
     void Start()
     {
@@ -36,30 +21,33 @@ public class KinectManager : MonoBehaviour
             this.faceSource = FaceFrameSource.Create(this.sensor, 0, FaceFrameFeatures.RotationOrientation);
             this.faceReader = this.faceSource.OpenReader();           
 
-            if (!sensor.IsOpen)
+            if (!this.sensor.IsOpen)
             {
-                sensor.Open();
+                this.sensor.Open();
             }
-        } else
-        {
-            ErrorMessage.SetActive(true);
         }
+
+        this.networkManager = FindObjectOfType<NetworkManager>();
     }
 
     void Update()
     {
+        CameraSpacePoint headPosition = new CameraSpacePoint();
+        Windows.Kinect.Vector4 headRotation = new Windows.Kinect.Vector4();
+
         if (this.bodyReader != null)
         {
             var frame = this.bodyReader.AcquireLatestFrame();
             if (frame != null)
             {
+                Debug.Log("Body frame acquired.");
                 Body[] bodies = new Body[frame.BodyCount];
                 frame.GetAndRefreshBodyData(bodies);
                 Body body = bodies.Where(b => b.IsTracked).FirstOrDefault();
 
                 if (body != null)
                 {
-                    this.HeadPosition = body.Joints[JointType.Head].Position;
+                    headPosition = body.Joints[JointType.Head].Position;
 
                     if (!this.faceSource.IsTrackingIdValid)
                     {
@@ -78,13 +66,16 @@ public class KinectManager : MonoBehaviour
 
             if (frame != null)
             {
+                Debug.Log("Face frame acquired.");
                 FaceFrameResult result = frame.FaceFrameResult;
                 if(result != null)
                 {
-                    this.HeadRotation = result.FaceRotationQuaternion;
+                    headRotation = result.FaceRotationQuaternion;
                 }
             }
         }
+
+        this.networkManager.Send("" + headPosition.X + ';' + headPosition.Y + ';' + headPosition.Z + ';' + headRotation.X + ';' + headRotation.Y + ';' + headRotation.Z + ';' + headRotation.W);
     }
 
     void OnApplicationQuit()
