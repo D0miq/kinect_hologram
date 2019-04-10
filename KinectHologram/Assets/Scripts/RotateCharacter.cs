@@ -5,7 +5,6 @@ using Windows.Kinect;
 
 public class RotateCharacter : MonoBehaviour
 {
-    public Transform character;
     public GameObject kinectManagerObject;
 
     private KinectManager kinectManager;
@@ -23,11 +22,13 @@ public class RotateCharacter : MonoBehaviour
         //transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(-90f, 0f, 0f) * new Quaternion(-vector.X, -vector.Z, -vector.Y, vector.W), 0.1f);
         
         CameraSpacePoint headPosition = this.kinectManager.HeadPosition;
-        Vector3 headVector = new Vector3(headPosition.X * 100, -headPosition.Y * 100, headPosition.Z * 100);
+        Vector3 headVector = new Vector3(headPosition.X * 100, -headPosition.Y * 100, headPosition.Z * 100 + 30);
 
         Debug.Log(headVector);
+        Debug.DrawRay(Vector3.zero, headVector);
+        Debug.DrawRay(Vector3.zero, -headVector);
 
-        //transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(headVector) * Quaternion.Euler(-90f, 0f, 0f), 0.5f);
-        transform.rotation = Quaternion.LookRotation(headVector) * Quaternion.Euler(-90f, 0f, 0f);
+        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(headVector), 0.2f);
+        //transform.rotation = Quaternion.LookRotation(headVector);
     }
 }
