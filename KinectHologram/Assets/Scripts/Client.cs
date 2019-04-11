@@ -18,8 +18,8 @@ public class Client : IClient
             IPAddress ipAddress = IPAddress.Parse(ipString);
             IPEndPoint remoteEndPoint = new IPEndPoint(ipAddress, port);
 
-            // Creation TCP/IP Socket using  
-            // Socket Class Costructor 
+            // Creation TCP/IP Socket using Socket Class Costructor 
+            Debug.Log("Create socket for TCP/IP to the server.");
             this.sender = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);        
             this.sender.Connect(remoteEndPoint);
         } catch (Exception e)

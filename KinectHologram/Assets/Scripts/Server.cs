@@ -8,8 +8,7 @@ public class Server
 {
     private Socket listener;
     private List<Socket> sockets;
-    private bool running = true;
-
+    private bool running = false;
 
     public Server(string ipString, int port, int maxRequests)
     {
@@ -33,10 +32,9 @@ public class Server
             Debug.Log("Starting listening on the server socket.");
             this.listener.Listen(maxRequests);
 
-            Debug.Log("Start the server.");
+            this.running = true;
         } catch (Exception e)
         {
-            this.running = false;
             Debug.Log(e.ToString());
         }
     }

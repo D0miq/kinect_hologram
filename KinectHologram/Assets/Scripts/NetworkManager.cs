@@ -17,6 +17,11 @@ public class NetworkManager : MonoBehaviour
     private IClient client; 
     
     private bool atStart = true;
+    
+    void Start()
+    {
+        Time.timeScale = 0;
+    }
 
     // Update is called once per frame
     void Update()
@@ -27,16 +32,19 @@ public class NetworkManager : MonoBehaviour
             {
                 this.server = new Server(this.ServerIpAddress, this.Port, this.MaxRequests);
                 this.atStart = false;
+                Time.timeScale = 1.0f;
             }
             if (Input.GetKeyDown(KeyCode.C))
             {
                 this.client = new Client(this.ServerIpAddress, this.Port);
                 this.atStart = false;
+                Time.timeScale = 1.0f;
             }
             if (Input.GetKeyDown(KeyCode.L))
             {
                 this.client = new LocalClient();
                 this.atStart = false;
+                Time.timeScale = 1.0f;
             }
         }
         
@@ -48,6 +56,9 @@ public class NetworkManager : MonoBehaviour
 
     public void Send(string message)
     {
-        this.client.Send(message);
+        if(this.client != null)
+        {
+            this.client.Send(message);
+        }
     }
 }
