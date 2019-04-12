@@ -4,45 +4,53 @@ using System.Net;
 using System.Net.Sockets;
 using UnityEngine;
 
-public class Server
+public class Server : MonoBehaviour
 {
+    public Camera[] Cameras;
+    public string IpAddress;
+    public int Port;
+    public int MaxRequests;
+
     private Socket listener;
     private List<Socket> sockets;
     private bool running = false;
-
-    public Server(string ipString, int port, int maxRequests)
+    private Dictionary<Socket, Camera> socketCamera;
+    
+    private void Awake()
     {
         this.sockets = new List<Socket>();
+        this.socketCamera = new Dictionary<Socket, Camera>();
 
         try
         {
-            IPAddress ipAddress = IPAddress.Parse(ipString);
-            IPEndPoint localEndPoint = new IPEndPoint(ipAddress, port);
+            IPAddress ipAddress = IPAddress.Parse(this.IpAddress);
+            IPEndPoint localEndPoint = new IPEndPoint(ipAddress, this.Port);
 
             Debug.Log("Creating a new server socket.");
             // Create a Socket that will use Tcp protocol      
             this.listener = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
             this.sockets.Add(this.listener);
-        
+
             // A Socket must be associated with an endpoint using the Bind method
             Debug.Log("Binding the server socket.");
             this.listener.Bind(localEndPoint);
 
             // Specify how many requests a Socket can listen before it gives Server busy response  
             Debug.Log("Starting listening on the server socket.");
-            this.listener.Listen(maxRequests);
+            this.listener.Listen(this.MaxRequests);
 
             this.running = true;
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             Debug.Log(e.ToString());
         }
     }
 
-    ~Server()
+    private void OnApplicationQuit()
     {
         // Close all sockets even a server socket and delete all client sockets
-        if(this.sockets != null)
+        if (this.sockets != null)
         {
             this.sockets.ForEach(socket => socket.Close());
             this.sockets.Clear();
@@ -50,15 +58,15 @@ public class Server
         }
 
         // Server socket is already closed, just delete it
-        if(this.listener != null)
+        if (this.listener != null)
         {
             this.listener = null;
         }
     }
 
-    public void ProcessInput()
+    private void Update()
     {
-        if(!running)
+        if (!running)
         {
             return;
         }
@@ -66,7 +74,7 @@ public class Server
         try
         {
             List<Socket> tempSockets = new List<Socket>(sockets);
-            Socket.Select(tempSockets, null, null, -1);
+            Socket.Select(tempSockets, null, null, 10);
             if (tempSockets.Contains(this.listener))
             {
                 Socket clientSocket = this.listener.Accept();
@@ -83,14 +91,16 @@ public class Server
                 if (numByte != 0)
                 {
                     // TODO : zpracování vstupu
-                } else
+                }
+                else
                 {
                     socket.Close();
                     this.sockets.Remove(socket);
                     Debug.Log("Disconnecting a client from the server.");
                 }
             }
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             Debug.Log(e.ToString());
         }

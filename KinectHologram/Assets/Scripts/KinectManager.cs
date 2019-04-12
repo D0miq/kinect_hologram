@@ -6,12 +6,13 @@ using System.Linq;
 
 public class KinectManager : MonoBehaviour
 {
+    public IClient NetworkClient;
+
     private KinectSensor sensor;
     private BodyFrameReader bodyReader;
     private FaceFrameReader faceReader;
     private FaceFrameSource faceSource;
-    private NetworkManager networkManager;
-
+    
     void Start()
     {
         this.sensor = KinectSensor.GetDefault();
@@ -19,15 +20,23 @@ public class KinectManager : MonoBehaviour
         {
             this.bodyReader = this.sensor.BodyFrameSource.OpenReader();
             this.faceSource = FaceFrameSource.Create(this.sensor, 0, FaceFrameFeatures.RotationOrientation);
-            this.faceReader = this.faceSource.OpenReader();           
+            if(this.faceSource != null)
+            {
+                this.faceReader = this.faceSource.OpenReader();
+            } else
+            {
+                Debug.Log("Face reader has not been opened.");
+            }        
 
             if (!this.sensor.IsOpen)
             {
+                Debug.Log("Kinect has been started.");
                 this.sensor.Open();
             }
+        } else
+        {
+            Debug.Log("Kinect has not been found.");
         }
-
-        this.networkManager = FindObjectOfType<NetworkManager>();
     }
 
     void Update()
@@ -74,8 +83,8 @@ public class KinectManager : MonoBehaviour
                 }
             }
         }
-
-        this.networkManager.Send("" + headPosition.X + ';' + headPosition.Y + ';' + headPosition.Z + ';' + headRotation.X + ';' + headRotation.Y + ';' + headRotation.Z + ';' + headRotation.W);
+        
+        this.NetworkClient.Send("" + headPosition.X + ';' + headPosition.Y + ';' + headPosition.Z + ';' + headRotation.X + ';' + headRotation.Y + ';' + headRotation.Z + ';' + headRotation.W);
     }
 
     void OnApplicationQuit()

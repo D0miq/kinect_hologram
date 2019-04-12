@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -8,27 +6,32 @@ using UnityEngine;
 
 public class Client : IClient
 {
+    public string IpAddress;
+    public int Port;
+
     private Socket sender;
 
-    public Client(string ipString, int port)
+    private void Awake()
     {
         try
         {
             // Establish the remote endpoint for the socket.
-            IPAddress ipAddress = IPAddress.Parse(ipString);
-            IPEndPoint remoteEndPoint = new IPEndPoint(ipAddress, port);
+            IPAddress ipAddress = IPAddress.Parse(this.IpAddress);
+            IPEndPoint remoteEndPoint = new IPEndPoint(ipAddress, this.Port);
 
             // Creation TCP/IP Socket using Socket Class Costructor 
             Debug.Log("Create socket for TCP/IP to the server.");
-            this.sender = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);        
+            this.sender = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
             this.sender.Connect(remoteEndPoint);
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             Debug.Log(e.ToString());
+            this.sender = null;
         }
     }
 
-    ~Client()
+    private void OnApplicationQuit()
     {
         if(this.sender != null)
         {
@@ -37,7 +40,7 @@ public class Client : IClient
         }
     }
 
-    public void Send(string message)
+    public override void Send(string message)
     {
         byte[] messageSent = Encoding.ASCII.GetBytes(message);
 
@@ -45,8 +48,9 @@ public class Client : IClient
         {
             if (this.sender != null)
             {
-                int byteSent = this.sender.Send(messageSent);
                 Debug.Log("Send: " + message);
+                int byteSent = this.sender.Send(messageSent);
+                Debug.Log("Sent bytes: " + byteSent);
             }
         } catch (Exception e)
         {

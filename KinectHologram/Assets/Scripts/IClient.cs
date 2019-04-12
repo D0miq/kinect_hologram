@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IClient
+public abstract class IClient : MonoBehaviour
 {
-    void Send(string message);
+    public abstract void Send(string message);
 }
