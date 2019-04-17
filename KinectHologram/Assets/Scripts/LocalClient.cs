@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class LocalClient : IClient
 {
@@ -22,6 +23,11 @@ public class LocalClient : IClient
         if(Input.GetKeyDown(KeyCode.M))
         {
             this.move = !this.move;
+        }
+
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            SceneManager.LoadScene("MenuScene");
         }
     }
 

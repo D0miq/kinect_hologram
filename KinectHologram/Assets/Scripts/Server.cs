@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Server : MonoBehaviour
 {
@@ -47,7 +48,7 @@ public class Server : MonoBehaviour
         }
     }
 
-    private void OnApplicationQuit()
+    private void OnDestroy()
     {
         // Close all sockets even a server socket and delete all client sockets
         if (this.sockets != null)
@@ -66,6 +67,11 @@ public class Server : MonoBehaviour
 
     private void Update()
     {
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            SceneManager.LoadScene("MenuScene");
+        }
+
         if (!running)
         {
             return;

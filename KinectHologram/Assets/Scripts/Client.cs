@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Client : IClient
 {
@@ -31,12 +32,20 @@ public class Client : IClient
         }
     }
 
-    private void OnApplicationQuit()
+    private void OnDestroy()
     {
         if(this.sender != null)
         {
             this.sender.Close();
             this.sender = null;
+        }
+    }
+
+    public void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            SceneManager.LoadScene("MenuScene");
         }
     }
 

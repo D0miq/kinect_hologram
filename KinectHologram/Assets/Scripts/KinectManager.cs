@@ -3,6 +3,7 @@ using System.Collections;
 using Windows.Kinect;
 using Microsoft.Kinect.Face;
 using System.Linq;
+using UnityEditor;
 
 public class KinectManager : MonoBehaviour
 {
@@ -87,7 +88,7 @@ public class KinectManager : MonoBehaviour
         this.NetworkClient.Send("" + headPosition.X + ';' + headPosition.Y + ';' + headPosition.Z + ';' + headRotation.X + ';' + headRotation.Y + ';' + headRotation.Z + ';' + headRotation.W);
     }
 
-    void OnApplicationQuit()
+    void OnDestroy()
     {
         if (this.faceReader != null)
         {

@@ -15,17 +15,42 @@ public class Menu : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.S))
         {
-            SceneManager.LoadScene("ServerScene");
+            this.LoadServerScene();
         }
 
         if (Input.GetKeyDown(KeyCode.C))
         {
-            SceneManager.LoadScene("ClientScene");
+            this.LoadClientScene();
         }
 
         if (Input.GetKeyDown(KeyCode.L))
         {
-            SceneManager.LoadScene("LocalClientScene");
+            this.LoadLocalScene();
         }
+
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            this.ExitApplication();
+        }
+    }
+
+    public void LoadLocalScene()
+    {
+        SceneManager.LoadScene("LocalClientScene");
+    }
+
+    public void LoadServerScene()
+    {
+        SceneManager.LoadScene("ServerScene");
+    }
+
+    public void LoadClientScene()
+    {
+        SceneManager.LoadScene("ClientScene");
+    }
+
+    public void ExitApplication()
+    {
+        Application.Quit();
     }
 }
