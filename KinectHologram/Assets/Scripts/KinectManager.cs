@@ -8,6 +8,7 @@ using UnityEditor;
 public class KinectManager : MonoBehaviour
 {
     public IClient NetworkClient;
+    public float MaxZ;
 
     private KinectSensor sensor;
     private BodyFrameReader bodyReader;
@@ -85,7 +86,10 @@ public class KinectManager : MonoBehaviour
             }
         }
         
-        this.NetworkClient.Send("" + headPosition.X + ';' + headPosition.Y + ';' + headPosition.Z + ';' + headRotation.X + ';' + headRotation.Y + ';' + headRotation.Z + ';' + headRotation.W);
+        if(headPosition.Z < this.MaxZ)
+        {
+            this.NetworkClient.Send("" + headPosition.X + ';' + headPosition.Y + ';' + headPosition.Z + ';' + headRotation.X + ';' + headRotation.Y + ';' + headRotation.Z + ';' + headRotation.W);
+        }       
     }
 
     void OnDestroy()
