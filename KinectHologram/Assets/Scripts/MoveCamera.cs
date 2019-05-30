@@ -5,6 +5,9 @@ public class MoveCamera : MonoBehaviour
     public float ZOffset;
 
     private new Camera camera;
+    private Vector3 oldCameraPosition;
+    private float oldFocalLength;
+    private Vector2 oldLensShift;
 
     private void Start()
     {
@@ -13,9 +16,14 @@ public class MoveCamera : MonoBehaviour
 
     public void Move(Vector3 position)
     {
-        this.transform.position = Vector3.Lerp(this.transform.position, new Vector3(position.x, position.y, -position.z - ZOffset), 0.2f);
-        this.camera.focalLength = Mathf.Lerp(this.camera.focalLength, (position.z + ZOffset) * 1000, 0.2f);
-        this.camera.lensShift = Vector2.Lerp(this.camera.lensShift, new Vector2(-position.x * 1000 / this.camera.sensorSize.x, -position.y * 1000 / this.camera.sensorSize.y), 0.2f);
+        this.oldCameraPosition = this.transform.position;
+        this.oldFocalLength = this.camera.focalLength;
+        this.oldLensShift = this.camera.lensShift;
+
+        this.transform.position = new Vector3(-position.x, position.y, -position.z - ZOffset);
+        this.camera.focalLength = (position.z + ZOffset) * 1000;
+        this.camera.lensShift = new Vector2(position.x * 1000 / this.camera.sensorSize.x, -position.y * 1000 / this.camera.sensorSize.y);
+
     }
 
     public void Rotate(Quaternion rotation)

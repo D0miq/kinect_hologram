@@ -14,10 +14,10 @@ TagManager:
   - 
   - 
   - PostProcessing
-  - 
-  - 
-  - 
-  - 
+  - FrontCamera
+  - BackCamera
+  - LeftCamera
+  - RightCamera
   - 
   - 
   - 

@@ -14,6 +14,7 @@ public class KinectManager : MonoBehaviour
     private BodyFrameReader bodyReader;
     private FaceFrameReader faceReader;
     private FaceFrameSource faceSource;
+
     
     void Start()
     {
@@ -45,6 +46,7 @@ public class KinectManager : MonoBehaviour
     {
         CameraSpacePoint headPosition = new CameraSpacePoint();
         Windows.Kinect.Vector4 headRotation = new Windows.Kinect.Vector4();
+        CameraSpacePoint handPosition = new CameraSpacePoint();
 
         if (this.bodyReader != null)
         {
@@ -59,6 +61,7 @@ public class KinectManager : MonoBehaviour
                 if (body != null)
                 {
                     headPosition = body.Joints[JointType.Head].Position;
+                    handPosition = body.Joints[JointType.HandRight].Position;
 
                     if (!this.faceSource.IsTrackingIdValid)
                     {
@@ -88,7 +91,7 @@ public class KinectManager : MonoBehaviour
         
         if(headPosition.Z < this.MaxZ)
         {
-            this.NetworkClient.Send("" + headPosition.X + ';' + headPosition.Y + ';' + headPosition.Z + ';' + headRotation.X + ';' + headRotation.Y + ';' + headRotation.Z + ';' + headRotation.W);
+            this.NetworkClient.Send("" + headPosition.X + ';' + headPosition.Y + ';' + headPosition.Z + ';' + headRotation.X + ';' + headRotation.Y + ';' + headRotation.Z + ';' + headRotation.W + ';' + handPosition.X + ';' + handPosition.Y + ';' + handPosition.Z);
         }       
     }
 

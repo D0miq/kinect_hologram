@@ -83,6 +83,7 @@ public class Server : MonoBehaviour
             Socket.Select(tempSockets, null, null, 10);
             if (tempSockets.Contains(this.listener))
             {
+                tempSockets.Remove(this.listener);
                 Socket clientSocket = this.listener.Accept();
                 this.sockets.Add(clientSocket);
                 Debug.Log("Connecting a new client to the server.");
@@ -90,6 +91,10 @@ public class Server : MonoBehaviour
 
             foreach (Socket socket in tempSockets)
             {
+                Debug.Log("TempSockets: " + tempSockets.ToString());
+                Debug.Log("Connected: " + socket.Connected);
+                Debug.Log("" + socket.AddressFamily.ToString());
+
                 // Data buffer 
                 byte[] bytes = new Byte[1024];
                 int numByte = socket.Receive(bytes);
