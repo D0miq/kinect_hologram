@@ -13,7 +13,6 @@ public class LocalClient : IClient
     private bool rotate = false;
     private bool move = true;
 
-
     private void Update()
     {
         if(Input.GetKeyDown(KeyCode.R))
@@ -42,6 +41,8 @@ public class LocalClient : IClient
         try
         {
             headPosition = new Vector3(float.Parse(values[0]), float.Parse(values[1]), float.Parse(values[2]));
+            
+
             headRotation = new Quaternion(float.Parse(values[3]), float.Parse(values[4]), float.Parse(values[5]), float.Parse(values[6]));
             handPosition = new Vector3(float.Parse(values[7]), float.Parse(values[8]), float.Parse(values[9]));
             //Debug.Log("Head position: " + headPosition);
