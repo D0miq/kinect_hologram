@@ -8,14 +8,26 @@ using UnityEditor;
 public class KinectManager : MonoBehaviour
 {
     public IClient NetworkClient;
+    public float MaxZ;
+    public float XOffset;
+    public float ZOffset;
 
+    private Matrix4x4 transformMatrix;
     private KinectSensor sensor;
     private BodyFrameReader bodyReader;
     private FaceFrameReader faceReader;
     private FaceFrameSource faceSource;
+
     
     void Start()
     {
+        float hypotenuse = Mathf.Sqrt(this.XOffset * this.XOffset + this.ZOffset * this.ZOffset);
+
+        float cos = XOffset / hypotenuse;
+        float sin = ZOffset / hypotenuse;
+        this.transformMatrix = new Matrix4x4(new UnityEngine.Vector4(cos, 0, sin, 0), new UnityEngine.Vector4(0, 1, 0, 0), new UnityEngine.Vector4(-sin, 0, cos, 0), new UnityEngine.Vector4(-XOffset, 0, -ZOffset, 1));
+
+
         this.sensor = KinectSensor.GetDefault();
         if (this.sensor != null)
         {
@@ -44,6 +56,7 @@ public class KinectManager : MonoBehaviour
     {
         CameraSpacePoint headPosition = new CameraSpacePoint();
         Windows.Kinect.Vector4 headRotation = new Windows.Kinect.Vector4();
+        CameraSpacePoint handPosition = new CameraSpacePoint();
 
         if (this.bodyReader != null)
         {
@@ -58,6 +71,7 @@ public class KinectManager : MonoBehaviour
                 if (body != null)
                 {
                     headPosition = body.Joints[JointType.Head].Position;
+                    handPosition = body.Joints[JointType.HandRight].Position;
 
                     if (!this.faceSource.IsTrackingIdValid)
                     {
@@ -84,8 +98,24 @@ public class KinectManager : MonoBehaviour
                 }
             }
         }
-        
-        this.NetworkClient.Send("" + headPosition.X + ';' + headPosition.Y + ';' + headPosition.Z + ';' + headRotation.X + ';' + headRotation.Y + ';' + headRotation.Z + ';' + headRotation.W);
+
+        if (headPosition.Z < this.MaxZ)
+        {
+            UnityEngine.Vector4 transformedHeadPosition;
+            UnityEngine.Vector4 transformedHandPosition;
+            if (headPosition.X != 0 && headPosition.Y != 0 && headPosition.Z != 0)
+            {
+                transformedHeadPosition = this.transformMatrix * new UnityEngine.Vector4(headPosition.X, headPosition.Y, -headPosition.Z, 1);
+                transformedHandPosition = this.transformMatrix * new UnityEngine.Vector4(handPosition.X, handPosition.Y, -handPosition.Z, 1);
+            }
+            else
+            {
+                transformedHeadPosition = UnityEngine.Vector4.zero;
+                transformedHandPosition = UnityEngine.Vector4.zero;
+            }
+
+            this.NetworkClient.Send("" + -transformedHeadPosition.x + ';' + transformedHeadPosition.y + ';' + transformedHeadPosition.z + ';' + headRotation.X + ';' + headRotation.Y + ';' + headRotation.Z + ';' + headRotation.W + ';' + -transformedHandPosition.x + ';' + transformedHandPosition.y + ';' + transformedHandPosition.z);
+        }       
     }
 
     void OnDestroy()

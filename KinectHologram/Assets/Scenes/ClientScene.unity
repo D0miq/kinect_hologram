@@ -153,7 +153,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 0f4756588d053c749993da5b687b4f08, type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 0f4756588d053c749993da5b687b4f08, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -280,9 +280,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
---- !u!1001 &1174501993
+--- !u!1001 &1239293726
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -351,13 +351,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8697378001245879041, guid: a66bccc80983ec2408ffd62ab8a8caa4,
         type: 3}
-      propertyPath: m_NormalizedViewPortRect.width
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8697378001245879041, guid: a66bccc80983ec2408ffd62ab8a8caa4,
-        type: 3}
-      propertyPath: m_NormalizedViewPortRect.height
-      value: 1
+      propertyPath: m_NormalizedViewPortRect.x
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8697378001245879041, guid: a66bccc80983ec2408ffd62ab8a8caa4,
         type: 3}
@@ -366,7 +361,37 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8697378001245879041, guid: a66bccc80983ec2408ffd62ab8a8caa4,
         type: 3}
-      propertyPath: m_NormalizedViewPortRect.x
+      propertyPath: m_NormalizedViewPortRect.height
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8697378001245879041, guid: a66bccc80983ec2408ffd62ab8a8caa4,
+        type: 3}
+      propertyPath: m_NormalizedViewPortRect.width
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8697378001245879041, guid: a66bccc80983ec2408ffd62ab8a8caa4,
+        type: 3}
+      propertyPath: m_GateFitMode
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8697378001245879041, guid: a66bccc80983ec2408ffd62ab8a8caa4,
+        type: 3}
+      propertyPath: m_ClearFlags
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8697378001245879041, guid: a66bccc80983ec2408ffd62ab8a8caa4,
+        type: 3}
+      propertyPath: m_BackGroundColor.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8697378001245879041, guid: a66bccc80983ec2408ffd62ab8a8caa4,
+        type: 3}
+      propertyPath: m_BackGroundColor.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8697378001245879041, guid: a66bccc80983ec2408ffd62ab8a8caa4,
+        type: 3}
+      propertyPath: m_BackGroundColor.b
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -401,6 +426,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   NetworkClient: {fileID: 662464940}
+  MaxZ: 2
 --- !u!4 &1697708658
 Transform:
   m_ObjectHideFlags: 0
