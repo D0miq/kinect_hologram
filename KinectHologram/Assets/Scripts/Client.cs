@@ -7,7 +7,6 @@ using UnityEngine.SceneManagement;
 
 public class Client : IClient
 {
-    public string IpAddress;
     public int Port;
 
     private Socket sender;
@@ -17,7 +16,7 @@ public class Client : IClient
         try
         {
             // Establish the remote endpoint for the socket.
-            IPAddress ipAddress = IPAddress.Parse(this.IpAddress);
+            IPAddress ipAddress = IPAddress.Parse(Settings.IpAddress);
             IPEndPoint remoteEndPoint = new IPEndPoint(ipAddress, this.Port);
 
             // Creation TCP/IP Socket using Socket Class Costructor 

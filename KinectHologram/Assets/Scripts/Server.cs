@@ -8,7 +8,6 @@ using UnityEngine.SceneManagement;
 public class Server : MonoBehaviour
 {
     public Camera[] Cameras;
-    public string IpAddress;
     public int Port;
     public int MaxRequests;
 
@@ -24,7 +23,7 @@ public class Server : MonoBehaviour
 
         try
         {
-            IPAddress ipAddress = IPAddress.Parse(this.IpAddress);
+            IPAddress ipAddress = IPAddress.Any;
             IPEndPoint localEndPoint = new IPEndPoint(ipAddress, this.Port);
 
             Debug.Log("Creating a new server socket.");

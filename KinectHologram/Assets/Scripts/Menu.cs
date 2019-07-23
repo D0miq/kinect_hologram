@@ -46,7 +46,13 @@ public class Menu : MonoBehaviour
 
     public void LoadClientScene()
     {
+
         SceneManager.LoadScene("ClientScene");
+    }
+
+    public void OpenStartMenu()
+    {
+
     }
 
     public void ExitApplication()
