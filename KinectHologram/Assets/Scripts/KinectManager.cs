@@ -9,6 +9,7 @@ public class KinectManager : MonoBehaviour
 {
     public IClient NetworkClient;
     public float MaxZ;
+    public float angle;
     public float XOffset;
     public float ZOffset;
 
@@ -17,22 +18,20 @@ public class KinectManager : MonoBehaviour
     private BodyFrameReader bodyReader;
     private FaceFrameReader faceReader;
     private FaceFrameSource faceSource;
-
-    
+  
     void Start()
     {
-        float hypotenuse = Mathf.Sqrt(this.XOffset * this.XOffset + this.ZOffset * this.ZOffset);
+        float cos = Mathf.Cos(angle * Mathf.Deg2Rad);
+        float sin = Mathf.Sin(angle * Mathf.Deg2Rad);
 
-        float cos = XOffset / hypotenuse;
-        float sin = ZOffset / hypotenuse;
-        this.transformMatrix = new Matrix4x4(new UnityEngine.Vector4(cos, 0, sin, 0), new UnityEngine.Vector4(0, 1, 0, 0), new UnityEngine.Vector4(-sin, 0, cos, 0), new UnityEngine.Vector4(-XOffset, 0, -ZOffset, 1));
-
+        this.transformMatrix = Matrix4x4.Scale(new Vector3(1, 1, -1)) * Matrix4x4.Translate(new Vector3(this.XOffset, 0, this.ZOffset)) * Matrix4x4.Rotate(Quaternion.Euler(0, 45, 0));
+        //new Matrix4x4(new UnityEngine.Vector4(10*cos, 0, 10*sin, 0), new UnityEngine.Vector4(0, 10, 0, 0), new UnityEngine.Vector4(10*sin, 0, -10*cos, 0), new UnityEngine.Vector4(XOffset, 0, -ZOffset, 1));
 
         this.sensor = KinectSensor.GetDefault();
         if (this.sensor != null)
         {
             this.bodyReader = this.sensor.BodyFrameSource.OpenReader();
-            this.faceSource = FaceFrameSource.Create(this.sensor, 0, FaceFrameFeatures.RotationOrientation);
+
             if(this.faceSource != null)
             {
                 this.faceReader = this.faceSource.OpenReader();
@@ -57,6 +56,7 @@ public class KinectManager : MonoBehaviour
         CameraSpacePoint headPosition = new CameraSpacePoint();
         Windows.Kinect.Vector4 headRotation = new Windows.Kinect.Vector4();
         CameraSpacePoint handPosition = new CameraSpacePoint();
+        Windows.Kinect.Vector4 handRotation = new Windows.Kinect.Vector4();
 
         if (this.bodyReader != null)
         {
@@ -72,8 +72,9 @@ public class KinectManager : MonoBehaviour
                 {
                     headPosition = body.Joints[JointType.Head].Position;
                     handPosition = body.Joints[JointType.HandRight].Position;
+                    handRotation = body.JointOrientations[JointType.HandRight].Orientation;
 
-                    if (!this.faceSource.IsTrackingIdValid)
+                    if (this.faceSource != null && !this.faceSource.IsTrackingIdValid)
                     {
                         this.faceSource.TrackingId = body.TrackingId;
                     }
@@ -105,8 +106,8 @@ public class KinectManager : MonoBehaviour
             UnityEngine.Vector4 transformedHandPosition;
             if (headPosition.X != 0 && headPosition.Y != 0 && headPosition.Z != 0)
             {
-                transformedHeadPosition = this.transformMatrix * new UnityEngine.Vector4(headPosition.X, headPosition.Y, -headPosition.Z, 1);
-                transformedHandPosition = this.transformMatrix * new UnityEngine.Vector4(handPosition.X, handPosition.Y, -handPosition.Z, 1);
+                transformedHeadPosition = this.transformMatrix * new UnityEngine.Vector4(headPosition.X, headPosition.Y, headPosition.Z, 1);
+                transformedHandPosition = this.transformMatrix * new UnityEngine.Vector4(handPosition.X, handPosition.Y, handPosition.Z, 1);
             }
             else
             {
@@ -114,7 +115,9 @@ public class KinectManager : MonoBehaviour
                 transformedHandPosition = UnityEngine.Vector4.zero;
             }
 
-            this.NetworkClient.Send("" + -transformedHeadPosition.x + ';' + transformedHeadPosition.y + ';' + transformedHeadPosition.z + ';' + headRotation.X + ';' + headRotation.Y + ';' + headRotation.Z + ';' + headRotation.W + ';' + -transformedHandPosition.x + ';' + transformedHandPosition.y + ';' + transformedHandPosition.z);
+            this.NetworkClient.Send("" + transformedHeadPosition.x + ';' + transformedHeadPosition.y + ';' + transformedHeadPosition.z + ';' + headRotation.X + ';' + headRotation.Y + ';' + headRotation.Z + ';' + headRotation.W + ';' + transformedHandPosition.x + ';' + transformedHandPosition.y + ';' + transformedHandPosition.z + ';' + handRotation.X + ';' + handRotation.Y + ';' + handRotation.Z + ';' + handRotation.W);
+            //this.NetworkClient.Send("" + -transformedHeadPosition.x + ';' + transformedHeadPosition.y + ';' + transformedHeadPosition.z + ';' + headRotation.X + ';' + headRotation.Y + ';' + headRotation.Z + ';' + headRotation.W + ';' + -transformedHandPosition.x + ';' + transformedHandPosition.y + ';' + transformedHandPosition.z);
+
         }       
     }
 

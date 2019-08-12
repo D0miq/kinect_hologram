@@ -7,8 +7,7 @@ using UnityEngine.SceneManagement;
 
 public class Server : MonoBehaviour
 {
-    public Camera[] Cameras;
-    public string IpAddress;
+    public Camera Camera;
     public int Port;
     public int MaxRequests;
 
