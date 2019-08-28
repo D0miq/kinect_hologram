@@ -18,6 +18,7 @@ public class Ball : MonoBehaviour
     private GameObject activePlayer;
     private AudioSource audioSource;
     private Rigidbody controller;
+    private Collider _collider;
 
     private bool started = false;
 
@@ -74,6 +75,17 @@ public class Ball : MonoBehaviour
 
         this.audioSource.clip = this.paddleBounce;
         this.audioSource.volume = relativeVelocity / 10;
-        this.audioSource.Play();       
+        this.audioSource.Play();
+
+        //this.controller.AddForce(collision.);
+
+        this.StartCoroutine(StopCollision(collision));
+    }
+
+    private IEnumerator StopCollision(Collision collision)
+    {
+        Physics.IgnoreCollision(this._collider, collision.collider, true);
+        yield return new WaitForSeconds(1);
+        Physics.IgnoreCollision(this._collider, collision.collider, false);
     }
 }

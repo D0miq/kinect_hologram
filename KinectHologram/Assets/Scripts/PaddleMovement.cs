@@ -10,6 +10,7 @@ public class PaddleMovement : MonoBehaviour
 
     private Queue<Vector3> oldPositions = new Queue<Vector3>();
     private Queue<Quaternion> oldRotations = new Queue<Quaternion>();
+
     public void Move(Vector3 position)
     {
         this.oldPositions.Enqueue(position);

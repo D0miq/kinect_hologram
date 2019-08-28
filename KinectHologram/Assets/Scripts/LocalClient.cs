@@ -35,6 +35,11 @@ public class LocalClient : IClient
         {
             SceneManager.LoadScene("MenuScene");
         }
+
+        if(Input.GetKeyDown(KeyCode.R))
+        {
+            SceneManager.LoadScene("LocalClientScene");
+        }
     }
 
     public override void Send(string message)
@@ -52,9 +57,9 @@ public class LocalClient : IClient
             handPosition = new Vector3(float.Parse(values[7]), float.Parse(values[8]), float.Parse(values[9]));
             handRotation = new Quaternion(float.Parse(values[10]), float.Parse(values[11]), float.Parse(values[12]), float.Parse(values[13]));
 
-            //Debug.Log("Head position: " + headPosition);
+            Debug.Log("Head position: " + headPosition);
             //Debug.Log("Head rotation: " + headRotation);
-            //Debug.Log("Hand position: " + handPosition);
+            Debug.Log("Hand position: " + handPosition);
             //Debug.Log("Hand rotation:" + handRotation);
         } catch(Exception e)
         {

@@ -10,6 +10,9 @@ using UnityEngine.SceneManagement;
 
 public class Menu : MonoBehaviour
 {
+    [SerializeField]
+    private GameObject activeMenu;
+
     // Update is called once per frame
     void Update()
     {
@@ -50,9 +53,11 @@ public class Menu : MonoBehaviour
         SceneManager.LoadScene("ClientScene");
     }
 
-    public void OpenStartMenu()
+    public void ChangeMenu(GameObject menu)
     {
-
+        this.activeMenu.SetActive(false);
+        this.activeMenu = menu;
+        this.activeMenu.SetActive(true);
     }
 
     public void ExitApplication()
