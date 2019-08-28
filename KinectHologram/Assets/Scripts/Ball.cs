@@ -25,6 +25,7 @@ public class Ball : MonoBehaviour
     private void Awake() {
         this.audioSource = GetComponent<AudioSource>();
         this.controller = GetComponent<Rigidbody>();
+        this._collider = GetComponent<Collider>();
     }
 
     private void FixedUpdate() {
@@ -32,6 +33,14 @@ public class Ball : MonoBehaviour
             this.started = true;
             this.controller.isKinematic = false;      
             this.controller.AddForce(Vector3.back * startForce, ForceMode.Impulse);           
+        }
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Paddle"))
+        {
+            this.StartCoroutine(StopCollision(collision));
         }
     }
 
@@ -77,9 +86,8 @@ public class Ball : MonoBehaviour
         this.audioSource.volume = relativeVelocity / 10;
         this.audioSource.Play();
 
-        //this.controller.AddForce(collision.);
-
-        this.StartCoroutine(StopCollision(collision));
+        this.controller.AddForce(collision.impulse, ForceMode.Impulse);
+        Debug.Log("Impact: " + collision.impulse);       
     }
 
     private IEnumerator StopCollision(Collision collision)
