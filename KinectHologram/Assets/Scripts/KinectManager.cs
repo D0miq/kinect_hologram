@@ -14,6 +14,7 @@ public class KinectManager : MonoBehaviour
     public float ZOffset;
 
     private Matrix4x4 transformMatrix;
+    private Quaternion rotation;
     private KinectSensor sensor;
     private BodyFrameReader bodyReader;
     private FaceFrameReader faceReader;
@@ -21,10 +22,8 @@ public class KinectManager : MonoBehaviour
   
     void Start()
     {
-        float cos = Mathf.Cos(angle * Mathf.Deg2Rad);
-        float sin = Mathf.Sin(angle * Mathf.Deg2Rad);
-
-        this.transformMatrix = Matrix4x4.Scale(new Vector3(1, 1, -1)) * Matrix4x4.Translate(new Vector3(this.XOffset, 0, this.ZOffset)) * Matrix4x4.Rotate(Quaternion.Euler(0, 45, 0));
+        this.rotation = Quaternion.Euler(0, angle, 0);
+        this.transformMatrix = Matrix4x4.Scale(new Vector3(1, 1, -1)) * Matrix4x4.Translate(new Vector3(this.XOffset, 0, this.ZOffset)) * Matrix4x4.Rotate(Quaternion.Euler(0, angle, 0));
         //new Matrix4x4(new UnityEngine.Vector4(10*cos, 0, 10*sin, 0), new UnityEngine.Vector4(0, 10, 0, 0), new UnityEngine.Vector4(10*sin, 0, -10*cos, 0), new UnityEngine.Vector4(XOffset, 0, -ZOffset, 1));
 
         this.sensor = KinectSensor.GetDefault();
@@ -104,18 +103,22 @@ public class KinectManager : MonoBehaviour
         {
             UnityEngine.Vector4 transformedHeadPosition;
             UnityEngine.Vector4 transformedHandPosition;
+            Quaternion handQuaternionRotation;
+
             if (headPosition.X != 0 && headPosition.Y != 0 && headPosition.Z != 0)
             {
                 transformedHeadPosition = this.transformMatrix * new UnityEngine.Vector4(headPosition.X, headPosition.Y, headPosition.Z, 1);
                 transformedHandPosition = this.transformMatrix * new UnityEngine.Vector4(handPosition.X, handPosition.Y, handPosition.Z, 1);
+                handQuaternionRotation = new Quaternion(handRotation.X, handRotation.Y, handRotation.Z, handRotation.W) * this.rotation;
             }
             else
             {
                 transformedHeadPosition = UnityEngine.Vector4.zero;
                 transformedHandPosition = UnityEngine.Vector4.zero;
+                handQuaternionRotation = new Quaternion();
             }
 
-            this.NetworkClient.Send("" + transformedHeadPosition.x + ';' + transformedHeadPosition.y + ';' + transformedHeadPosition.z + ';' + headRotation.X + ';' + headRotation.Y + ';' + headRotation.Z + ';' + headRotation.W + ';' + transformedHandPosition.x + ';' + transformedHandPosition.y + ';' + transformedHandPosition.z + ';' + handRotation.X + ';' + handRotation.Y + ';' + handRotation.Z + ';' + handRotation.W);
+            this.NetworkClient.Send("" + transformedHeadPosition.x + ';' + transformedHeadPosition.y + ';' + transformedHeadPosition.z + ';' + headRotation.X + ';' + headRotation.Y + ';' + headRotation.Z + ';' + headRotation.W + ';' + transformedHandPosition.x + ';' + transformedHandPosition.y + ';' + transformedHandPosition.z + ';' + handQuaternionRotation.x + ';' + handQuaternionRotation.y + ';' + handQuaternionRotation.z + ';' + handQuaternionRotation.w);
             //this.NetworkClient.Send("" + -transformedHeadPosition.x + ';' + transformedHeadPosition.y + ';' + transformedHeadPosition.z + ';' + headRotation.X + ';' + headRotation.Y + ';' + headRotation.Z + ';' + headRotation.W + ';' + -transformedHandPosition.x + ';' + transformedHandPosition.y + ';' + transformedHandPosition.z);
 
         }       

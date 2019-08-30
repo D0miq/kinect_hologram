@@ -86,8 +86,7 @@ public class Ball : MonoBehaviour
         this.audioSource.volume = relativeVelocity / 10;
         this.audioSource.Play();
 
-        this.controller.AddForce(collision.impulse, ForceMode.Impulse);
-        Debug.Log("Impact: " + collision.impulse);       
+        this.controller.AddForce(collision.impulse * Time.fixedDeltaTime, ForceMode.Impulse);
     }
 
     private IEnumerator StopCollision(Collision collision)

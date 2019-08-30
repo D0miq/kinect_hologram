@@ -81,6 +81,8 @@ public class LocalClient : IClient
             this.paddle.Move(handPosition);
         }
         
-        this.paddle.Rotate(handRotation);
+        if(!handRotation.Equals(new Quaternion())) {
+            this.paddle.Rotate(handRotation);
+        }
     }
 }

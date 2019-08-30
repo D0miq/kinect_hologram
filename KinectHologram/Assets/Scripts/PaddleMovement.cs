@@ -28,17 +28,6 @@ public class PaddleMovement : MonoBehaviour
     }
 
     public void Rotate(Quaternion quaternion) {
-        /*this.oldRotations.Enqueue(quaternion);
-        if (this.oldRotations.Count == this.averageCount) {
-            Quaternion sum = new Quaternion();
-            foreach(Quaternion q in this.oldRotations)
-            {
-                sum *= q;
-            }
-
-            this.transform.position = sum / this.oldRotations.Count;
-            Debug.Log(this.transform.position);
-            this.oldRotations.Dequeue();
-        }*/
+        //this.transform.rotation = quaternion.;
     }
 }
