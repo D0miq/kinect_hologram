@@ -19,8 +19,9 @@ public class Ball : MonoBehaviour
     private AudioSource audioSource;
     private Rigidbody controller;
     private Collider _collider;
-
+    private Vector3 velocityBeforeImpact;
     private bool started = false;
+    private PaddleMovement paddle;
 
     private void Awake() {
         this.audioSource = GetComponent<AudioSource>();
@@ -29,10 +30,12 @@ public class Ball : MonoBehaviour
     }
 
     private void FixedUpdate() {
+        this.velocityBeforeImpact = controller.velocity;
+
         if(Input.GetKeyDown(KeyCode.S) && !started) {     
             this.started = true;
-            this.controller.isKinematic = false;      
-            this.controller.AddForce(Vector3.back * startForce, ForceMode.Impulse);           
+            this.controller.useGravity = true;      
+            this.controller.AddForce(Vector3.back * startForce, ForceMode.Impulse);
         }
     }
 
@@ -74,7 +77,7 @@ public class Ball : MonoBehaviour
         this.audioSource.Play();
 
         if(this.tableBounceCounter >= 2) {
-            
+
         }
     }
 
@@ -86,13 +89,14 @@ public class Ball : MonoBehaviour
         this.audioSource.volume = relativeVelocity / 10;
         this.audioSource.Play();
 
-        this.controller.AddForce(collision.impulse * Time.fixedDeltaTime, ForceMode.Impulse);
+        var paddleMovement = collision.gameObject.GetComponent<PaddleMovement>();
+        //this.controller.AddForce(paddleMovement.Force - /* Síla míčku */, ForceMode.Impulse);  
     }
 
     private IEnumerator StopCollision(Collision collision)
     {
         Physics.IgnoreCollision(this._collider, collision.collider, true);
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(0.1f);
         Physics.IgnoreCollision(this._collider, collision.collider, false);
     }
 }

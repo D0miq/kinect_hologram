@@ -78,11 +78,11 @@ public class LocalClient : IClient
         }
 
         if(handPosition != Vector3.zero) {
-            this.paddle.Move(handPosition);
+            this.paddle.Position = handPosition;
         }
         
         if(!handRotation.Equals(new Quaternion())) {
-            this.paddle.Rotate(handRotation);
+            this.paddle.Rotation = handRotation;
         }
     }
 }
